@@ -12,3 +12,6 @@ uploads/
 
 # Docker DB
 docker/mysql/
+
+# Logs
+*.log
