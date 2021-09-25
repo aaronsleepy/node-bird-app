@@ -8,6 +8,8 @@ const dotenv = require('dotenv');
 const passport = require('passport');
 const helmet = require('helmet');
 const hpp = require('hpp');
+const redis = require('redis');
+const RedisStore = require('connect-redis')(session);
 
 dotenv.config();
 const pageRouter = require('./routes/page');
@@ -17,6 +19,11 @@ const userRouter = require('./routes/user');
 const { sequelize } = require('./models');
 const passportConfig = require('./passport');
 const logger = require('./logger');
+
+const redisClient = redis.createClient({
+  url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
+  password: process.env.REDIS_PASSWORD,
+});
 
 
 const app = express();
@@ -59,6 +66,7 @@ const sessionOption = {
     httpOnly: true,
     secure: false,
   },
+  store: new RedisStore({ client: redisClient }),
 };
 if ('production' === process.env.NODE_ENV) {
   // sessionOption.proxy = true;
